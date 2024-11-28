@@ -47,6 +47,12 @@ transition_probs <- c(
       0, 0 ,0 ,1 
 )
 
+
+
+
+ 
+
+# matrix for fixed probabilities
 t_matrix <- matrix(transition_probs, ncol = length(states) , nrow = length(states) , byrow = T, dimnames = list(from = states, to = states) )
  
  
@@ -69,16 +75,16 @@ n_cycle <- 40
 
 # create the markov simulation model frame
 markov_table[1, ] <- c(1000, 0 , 0 , 0)
-       for(j in 2:n_cycle){
-              markov_table[j,] <- as.matrix(markov_table[j-1, ]) %*% t_matrix
+       
+
+
+
+run_psa <- function(n_cohort, n_cycle, markov_table, t_matrix ){
+     psa_data <- split(params_PSA, 1:n_psa)
+         for(j in 2:n_cycle){
+              markov_table[j,] <- as.matrix(markov_table[j-1, ]) %*%  t_matrix 
            }
 
-
-
-
-run_psa <- function(n_cohort, n_cycle, markov_table){
-     psa_data <- split(params_PSA, 1:n_psa)
-       
       for(i in  seq_along(psa_data)){
          
         for(j in length(n_cycle)){
@@ -122,7 +128,7 @@ run_psa <- function(n_cohort, n_cycle, markov_table){
     
 }
  
-df_payoffs <- run_psa(1000, 40, markov_table)   
+df_payoffs <- run_psa(1000, 40, markov_table, t_matrix )   
  plot <- ggplot(df_payoffs, aes(x = Cost)) + geom_histogram(aes(y = ..density..), bins = 30, fill = "green" ,colour= "blue")  + geom_density(color = "red", size = 1.2) + theme_light()
 
  print(plot)
